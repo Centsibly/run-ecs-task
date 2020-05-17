@@ -21,6 +21,7 @@ async function runTask(ecs, clusterName, taskName, waitForMinutes, subnets, secu
 
   // Wait for service stability
   core.debug(`Waiting for the service to become stable. Will wait for ${waitForMinutes} minutes`);
+  core.info(JSON.stringify(taskInfo))
   const maxAttempts = (waitForMinutes * 60) / WAIT_DEFAULT_DELAY_SEC;
   await ecs.waitFor('tasksStopped', {
     tasks: [taskInfo.tasks.map(t => t.taskArn)],

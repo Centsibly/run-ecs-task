@@ -21,10 +21,9 @@ async function runTask(ecs, clusterName, taskName, waitForMinutes, subnets, secu
 
   // Wait for service stability
   core.debug(`Waiting for the service to become stable. Will wait for ${waitForMinutes} minutes`);
-  core.info(JSON.stringify(taskInfo))
   const maxAttempts = (waitForMinutes * 60) / WAIT_DEFAULT_DELAY_SEC;
   await ecs.waitFor('tasksStopped', {
-    tasks: [taskInfo.tasks.map(t => t.taskArn)],
+    tasks: taskInfo.tasks.map(t => t.taskArn.match(/\/([^\/]*)$/)[1]),
     cluster: clusterName,
     $waiter: {
       delay: WAIT_DEFAULT_DELAY_SEC,
@@ -40,11 +39,11 @@ async function run() {
     });
 
     // Get inputs
-    const clusterName = core.getInput('cluster', { required: true});
-    const task = core.getInput('task', { required: true});
-    const subnets = core.getInput('subnets', { required: true}).split(",");
-    const securityGroups = core.getInput('securityGroups', { required: true}).split(",");
-    let waitForMinutes = 30 
+    const clusterName = core.getInput('cluster', { required: true });
+    const task = core.getInput('task', { required: true });
+    const subnets = core.getInput('subnets', { required: true }).split(",");
+    const securityGroups = core.getInput('securityGroups', { required: true }).split(",");
+    let waitForMinutes = 30
 
     await runTask(ecs, clusterName, task, waitForMinutes, subnets, securityGroups);
   }
@@ -58,5 +57,5 @@ module.exports = run;
 
 /* istanbul ignore next */
 if (require.main === module) {
-    run();
+  run();
 }

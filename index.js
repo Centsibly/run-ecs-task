@@ -7,7 +7,7 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function waitForTasks(tasks, attemptsLeft) {
+async function waitForTasks(ecs, tasks, attemptsLeft) {
   core.info(`Waiting for tasks ${tasks} attemptsleft ${attemptsLeft}`)
   if (attemptsLeft === 0) {
     return 0
@@ -19,7 +19,7 @@ async function waitForTasks(tasks, attemptsLeft) {
     core.info(`Got data about task ${JSON.stringify(description)}`)
     if (description.tasks.some(t => t.stoppingAt === null || t.stoppingAt === undefined)) {
       await sleep(10000)
-      return waitForTasks(tasks, attemptsLeft - 1)
+      return waitForTasks(ecs, tasks, attemptsLeft - 1)
     } else {
       return 0
     }
@@ -45,7 +45,7 @@ async function runTask(ecs, clusterName, taskName, waitForMinutes, subnets, secu
   // Wait for service stability
   core.debug(`Waiting for the task to finish. Will wait for ${waitForMinutes} minutes`);
   const maxAttempts = (waitForMinutes * 60) / WAIT_DEFAULT_DELAY_SEC;
-  await waitForTasks(taskInfo.tasks.map(t => t.taskArn.match(/\/([^\/]*)$/)[1]), maxAttempts)
+  await waitForTasks(ecs,taskInfo.tasks.map(t => t.taskArn.match(/\/([^\/]*)$/)[1]), maxAttempts)
 }
 
 async function run() {

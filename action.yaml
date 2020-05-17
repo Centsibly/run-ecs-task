@@ -1,0 +1,12 @@
+name: 'Run ECS task'
+description: 'Runs an ECS task once'
+inputs:
+  task:
+    description: 'The name of the ECS task to run.'
+    required: true 
+  cluster:
+    description: "The name of the ECS service's cluster.  Will default to the 'default' cluster"
+    required: true 
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

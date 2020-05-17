@@ -1,0 +1,28 @@
+{
+  "name": "centsibly-run-ecs-task",
+  "version": "1.0.0",
+  "description": "Runs a single ECS task once",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint **.js",
+    "package": "ncc build index.js -o dist",
+    "test": "eslint **.js && jest --coverage"
+  },
+  "keywords": [
+    "AWS",
+    "GitHub",
+    "Actions",
+    "JavaScript"
+  ],
+  "author": "AWS",
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "aws-sdk": "^2.667.0",
+    "yaml": "^1.9.2"
+  },
+  "devDependencies": {
+    "@zeit/ncc": "^0.22.1",
+    "eslint": "^6.8.0",
+    "jest": "^25.5.3"
+  }
+}

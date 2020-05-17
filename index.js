@@ -20,8 +20,16 @@ async function runTask(ecs, clusterName, taskName, waitForMinutes, subnets, secu
   core.info(`Task started.`);
 
   // Wait for service stability
-  core.debug(`Waiting for the service to become stable. Will wait for ${waitForMinutes} minutes`);
+  core.debug(`Waiting for the task to finish. Will wait for ${waitForMinutes} minutes`);
   const maxAttempts = (waitForMinutes * 60) / WAIT_DEFAULT_DELAY_SEC;
+  await ecs.waitFor('tasksRunning', {
+    tasks: taskInfo.tasks.map(t => t.taskArn.match(/\/([^\/]*)$/)[1]),
+    cluster: clusterName,
+    $waiter: {
+      delay: WAIT_DEFAULT_DELAY_SEC,
+      maxAttempts: maxAttempts
+    }
+  }).promise();
   await ecs.waitFor('tasksStopped', {
     tasks: taskInfo.tasks.map(t => t.taskArn.match(/\/([^\/]*)$/)[1]),
     cluster: clusterName,

@@ -4,11 +4,18 @@ const aws = require('aws-sdk');
 const WAIT_DEFAULT_DELAY_SEC = 15;
 
 // Deploy to a service that uses the 'ECS' deployment controller
-async function runTask(ecs, clusterName, taskName, waitForMinutes) {
+async function runTask(ecs, clusterName, taskName, waitForMinutes, subnets, securityGroups) {
   core.debug('Running the task');
   const taskInfo = await ecs.runTask({
     cluster: clusterName,
     taskDefinition: taskName,
+    networkConfiguration: {
+      awsvpcConfiguration: {
+        subnets: subnets,
+        securityGroups: securityGroups,
+        assignPublicIp: 'ENABLED'
+      }
+    }
   }).promise();
   core.info(`Task started.`);
 
@@ -34,9 +41,11 @@ async function run() {
     // Get inputs
     const clusterName = core.getInput('cluster', { required: true});
     const task = core.getInput('task', { required: true});
+    const subnets = core.getInput('subnets', { required: true}).split(",");
+    const securityGroups = core.getInput('securityGroups', { required: true}).split(",");
     let waitForMinutes = 30 
 
-    await runTask(ecs, clusterName, task, waitForMinutes);
+    await runTask(ecs, clusterName, task, waitForMinutes, subnets, securityGroups);
   }
   catch (error) {
     core.setFailed(error.message);

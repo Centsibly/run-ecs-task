@@ -7,6 +7,12 @@ inputs:
   cluster:
     description: "The name of the ECS service's cluster.  Will default to the 'default' cluster"
     required: true 
+  subnets: 
+    description: "subnets"
+    required: true 
+  securityGroups: 
+    description: "securityGroups"
+    required: true 
 runs:
   using: 'node12'
   main: 'dist/index.js'

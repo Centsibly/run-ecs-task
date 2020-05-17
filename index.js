@@ -17,7 +17,6 @@ async function waitForTasks(ecs, tasks, clusterName, attemptsLeft) {
       tasks: tasks,
     }).promise();
 
-    core.info(`Got data about task ${JSON.stringify(description)}`)
     if (description.tasks.some(t => t.stoppingAt === null || t.stoppingAt === undefined)) {
       await sleep(10000)
       return waitForTasks(ecs, tasks, clusterName, attemptsLeft - 1)

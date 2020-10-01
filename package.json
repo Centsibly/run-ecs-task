@@ -16,7 +16,7 @@
   ],
   "author": "AWS",
   "dependencies": {
-    "@actions/core": "^1.2.4",
+    "@actions/core": "^1.2.6",
     "aws-sdk": "^2.667.0",
     "yaml": "^1.9.2"
   },
